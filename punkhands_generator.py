@@ -1,9 +1,12 @@
 import random as rand
-import numpy as np
 from PIL import Image
 import time
 
+
 PUNK_HANDS_SET = set()
+
+# [NAILS, SLEEVE, BRACELET, WATCH, GLOVE, HALF GLOVE, RING]
+NAILS, SLEEVE, BRACELET, WATCH, GLOVE, HALF_GLOVE, RING = 0, 0, 0, 0, 0, 0, 0
 
 
 def universal_picker(n, chances, options):
@@ -24,7 +27,7 @@ def pick_background():
     n = len(options)
     chances = [50, 35, 15]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_skin():
@@ -32,7 +35,7 @@ def pick_skin():
     n = len(options)
     chances = [30, 30, 30, 10]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_nails():
@@ -41,7 +44,7 @@ def pick_nails():
     n = len(options)
     chances = [2, 12.25, 12.25, 12.25, 12.25, 12.25, 12.25, 12.25, 12.25]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_sleeve():
@@ -49,9 +52,10 @@ def pick_sleeve():
                'SLEEVE06', 'SLEEVE07', 'SLEEVE08', 'SLEEVE09', 'SLEEVE10',
                'SLEEVE11', 'SLEEVE12', 'SLEEVE13', 'SLEEVE14', 'SLEEVE15']
     n = len(options)
-    chances = np.full(n, 6.66)
+    chances = [6.66, 6.66, 6.66, 6.66, 6.66, 6.66, 6.66,
+               6.66, 6.66, 6.66, 6.66, 6.66, 6.66, 6.66, 6.66, ]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_bracelet():
@@ -59,9 +63,10 @@ def pick_bracelet():
                'BRACELET06', 'BRACELET07', 'BRACELET08', 'BRACELET09', 'BRACELET10',
                'BRACELET11', 'BRACELET12']
     n = len(options)
-    chances = np.full(n, 8.33)
+    chances = [8.33, 8.33, 8.33, 8.33, 8.33,
+               8.33, 8.33, 8.33, 8.33, 8.33, 8.33, 8.33]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_watch():
@@ -70,9 +75,10 @@ def pick_watch():
                'WATCH11', 'WATCH12', 'WATCH13', 'WATCH14', 'WATCH15',
                'WATCH16', 'WATCH17', 'WATCH18']
     n = len(options)
-    chances = np.full(n, 5.55)
+    chances = [5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55,
+               5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55, 5.55]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_glove():
@@ -80,7 +86,7 @@ def pick_glove():
     n = len(options)
     chances = [33.33, 33.33, 33.33]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_half_glove():
@@ -88,7 +94,7 @@ def pick_half_glove():
     n = len(options)
     chances = [33.33, 33.33, 33.33]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_ring():
@@ -96,9 +102,9 @@ def pick_ring():
                'RING06', 'RING07', 'RING08', 'RING09', 'RING10',
                'RING11', 'RING12', 'RING13', 'RING14']
     n = len(options)
-    chances = np.append(np.full(10, 9), np.full(4, 2.5))
+    chances = [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 2.5, 2.5, 2.5, 2.5]
 
-    return universal_picker(n, chances, options)
+    return rand.choices(options, weights=chances, cum_weights=None, k=1)
 
 
 def pick_traits():
@@ -106,48 +112,47 @@ def pick_traits():
     chosen_traits = [False, False, False, False, False, False, False]
 
     num_trait_options = [2, 3, 4, 5]
-    num_trait_n = len(num_trait_options)
     num_trait_chances = [24.475, 48.515, 24.485, 2.535]
 
-    num_traits = universal_picker(
-        num_trait_n, num_trait_chances, num_trait_options)
+    num_traits = rand.choices(
+        num_trait_options, weights=num_trait_chances, cum_weights=None, k=1)[0]
 
     while num_traits > 0:
         trait_picker = rand.uniform(0, 100)
 
         # NAILS 0
         if trait_picker <= 15:
-            if chosen_traits[4] == False:
-                chosen_traits[0] = True
+            if chosen_traits[GLOVE] == False:
+                chosen_traits[NAILS] = True
                 num_traits -= 1
         # SLEEVE 1
         elif trait_picker <= 50:
-            chosen_traits[1] = True
+            chosen_traits[SLEEVE] = True
             num_traits -= 1
         # BRACELET 2
         elif trait_picker <= 60:
-            if chosen_traits[3] == False:
-                chosen_traits[2] = True
+            if chosen_traits[WATCH] == False:
+                chosen_traits[BRACELET] = True
                 num_traits -= 1
         # WATCH 3
         elif trait_picker <= 80:
-            if chosen_traits[2] == False:
-                chosen_traits[3] = True
+            if chosen_traits[BRACELET] == False:
+                chosen_traits[WATCH] = True
                 num_traits -= 1
         # GLOVE 4
         elif trait_picker <= 85:
-            if chosen_traits[0] == False & chosen_traits[5] == False:
+            if chosen_traits[NAILS] == False and chosen_traits[HALF_GLOVE] == False:
                 chosen_traits[4] = True
                 num_traits -= 1
         # HALF GLOVE 5
         elif trait_picker <= 90:
-            if chosen_traits[4] == False & chosen_traits[6] == False:
-                chosen_traits[5] = True
+            if chosen_traits[GLOVE] == False and chosen_traits[RING] == False:
+                chosen_traits[HALF_GLOVE] = True
             num_traits -= 1
         # RING 6
         else:
-            if chosen_traits[4] == False & chosen_traits[5] == False:
-                chosen_traits[6] = True
+            if chosen_traits[GLOVE] == False and chosen_traits[HALF_GLOVE] == False:
+                chosen_traits[RING] = True
                 num_traits -= 1
 
     return chosen_traits
@@ -156,8 +161,8 @@ def pick_traits():
 def make_hand(path):
     punk_hand_id = ""
 
-    background = pick_background()
-    skin_tone = pick_skin()
+    background = pick_background()[0]
+    skin_tone = pick_skin()[0]
 
     punk_hand_id = punk_hand_id + background + skin_tone
 
@@ -169,43 +174,43 @@ def make_hand(path):
     chosen_traits = pick_traits()
 
     if chosen_traits[2] == True:
-        bracelet = pick_bracelet()
+        bracelet = pick_bracelet()[0]
         image = Image.open('../assets/bracelets/' + bracelet + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += bracelet
 
     if chosen_traits[3] == True:
-        watch = pick_watch()
+        watch = pick_watch()[0]
         image = Image.open('../assets/watches/' + watch + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += watch
 
     if chosen_traits[1] == True:
-        sleeve = pick_sleeve()
+        sleeve = pick_sleeve()[0]
         image = Image.open('../assets/sleeves/' + sleeve + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += sleeve
 
     if chosen_traits[6] == True:
-        ring = pick_ring()
+        ring = pick_ring()[0]
         image = Image.open('../assets/rings/' + ring + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += ring
 
     if chosen_traits[0] == True:
-        nails = pick_nails()
+        nails = pick_nails()[0]
         image = Image.open('../assets/nails/' + nails + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += nails
 
     if chosen_traits[4] == True:
-        glove = pick_glove()
+        glove = pick_glove()[0]
         image = Image.open('../assets/gloves/' + glove + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += glove
 
     if chosen_traits[5] == True:
-        half_glove = pick_half_glove()
+        half_glove = pick_half_glove()[0]
         image = Image.open('../assets/half_gloves/' + half_glove + '.png')
         final_image.paste(image, (0, 0), image)
         punk_hand_id += half_glove
